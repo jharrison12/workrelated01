@@ -1,4 +1,4 @@
-@py.exe C:\Python33\WorkRelated\sllascraper.py %* 
+@py.exe C:\Python33\WorkRelated01\sllascraper.py %* 
 @pause
 
 

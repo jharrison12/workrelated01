@@ -80,15 +80,17 @@ try:
 				informationneeded = derp.text
 				#logging.info(informationneeded)
 				nameregex = re.compile(r'(Name:\n)\w+,\s\w+\s\w+')
-				score = re.compile(r'(1011 School Licensure Leadership Assmt\n)\d+\n\d+/\d+/\d+')
 				name = nameregex.search(informationneeded).group()
+				columnnumber = 1
+				sheet1.cell(row=i, column=columnnumber).value = str(name)
+				score = re.compile(r'(\d011 School Licensure Leadership Assmt\n)(\d+\n)(\d+/\d+/\d+)')
 				words = score.search(informationneeded).group()
 				logging.info(name)
 				logging.info(words)
-				columnnumber = 1
-				sheet1.cell(row=i, column=columnnumber).value = str(name)
-				columnnumber += 1 
-				sheet1.cell(row=i, column=columnnumber).value = str(words)
+				seperate = re.compile(r'\w+')
+				for letter in seperate.findall(words):
+					columnnumber += 1 
+					sheet1.cell(row=i, column=columnnumber).value = letter
 		except Exception as int:
 				print(int)
 except:
