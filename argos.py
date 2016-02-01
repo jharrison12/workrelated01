@@ -24,7 +24,6 @@ uname = input("Please input your username \n")
 username.send_keys(uname)
 pword = getpass.getpass("Please Enter Password \n")
 password.send_keys(pword)
-filename = input("What would like to name the file?")
 
 #locate the login button
 login = browser.find_element_by_id("ContentPlaceHolder1_cmdLogin")
@@ -64,7 +63,7 @@ try:
                 search = browser.find_element_by_id('MainContent_btnSearch')
                 search.click()
                 try:
-                        WebDriverWait(browser, 4).until(EC.element_to_be_clickable((By.ID,'MainContent_GridView1_LinkButton1_0')))
+                        WebDriverWait(browser, 2).until(EC.element_to_be_clickable((By.ID,'MainContent_GridView1_LinkButton1_0')))
                         teacherid = browser.find_element_by_id('MainContent_GridView1_LinkButton1_0')
                         teacherid.click()
                         logging.info('Found teacher id and clicked')
@@ -86,4 +85,4 @@ try:
 except:
         pass
 
-nwb.save(filename + '.xlsx')
+nwb.save('test1.xlsx')

@@ -55,7 +55,7 @@ def printscores():
 	donebutton = browser.find_element_by_id('imgBtnDone')
 	donebutton.click()
 	#todo let it continue when the pdf downloads and break if it does not download
-	try:
+	
 		
 	time.sleep(5)
 	pyautogui.press('enter')
