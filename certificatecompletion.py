@@ -10,7 +10,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
 website = "https://argos.lipscomb.edu/"
-argosUname = "harrisonjd" #input('Please enter your username: ')
+argosUname = input('Please enter your username: ')
 argosPasswd = getpass.getpass("Please enter your password: ")
 cbrowser = webdriver.Firefox()
 
@@ -31,9 +31,26 @@ def openArgos():
     cbrowser.switch_to.window(cbrowser.window_handles[-1])
     cbrowser.find_element_by_xpath("//*[@id=\"mCSB_1\"]/div[1]/div[2]/div[2]").click()
     cbrowser.find_element_by_xpath("//*[@id=\"mCSB_2\"]/div[1]/div[2]/div[2]/div[1]/div[1]/div[2]").click()
-    studentID = cbrowser.find_element_by_xpath('//*[@id="datablock"]/div[5]/div[1]/div[25]/div[11]/input').click()
+    studentID = cbrowser.find_element_by_xpath('//*[@id="datablock"]/div[5]/div[1]/div[25]/div[11]/input')
+    studentID.click()
     studentID.send_keys("L21743148")
-    cbrowser.find_element_by_link_text("Search").click()
+    #TODO iterate over a list of keys and copy the courses to an excel file
+    Semester = cbrowser.find_element_by_xpath("//*[@id=\"datablock\"]/div[5]/div[1]/div[25]/div[6]/select/option[7]")
+    Semester.click()
+    Search = cbrowser.find_element_by_xpath("//*[@id=\"datablock\"]/div[5]/div[1]/div[25]/div[9]/div/span")
+    Search.click()
+    print(cbrowser.find_element_by_xpath("//*[@id=\"datablock\"]/div[5]/div[1]/div[25]/div[12]/div/div[1]/div[2]/div/div[2]/div[1]/div[4]").text)
+    for i in range(1,10):
+        if str(cbrowser.find_element_by_xpath("//*[@id=\"datablock\"]/div[5]/div[1]/div[25]/div[12]/div/div[1]/div[2]/div/div[2]/div[" + i + "]/div[4]").text) == "G":
+            cbrowser.find_element_by_xpath("//*[@id=\"datablock\"]/div[5]/div[1]/div[25]/div[12]/div/div[1]/div[2]/div/div[2]/div[" + i + "]/div[4]").click()
+        else:
+            continue
+
+
+#//*[@id="datablock"]/div[5]/div[1]/div[25]/div[12]/div/div[1]/div[2]/div/div[2]/div[1]/div[4]/span
+#xpath selector for whether the student is grad or ug
+#//*[@id="datablock"]/div[5]/div[1]/div[25]/div[12]/div/div[1]/div[2]/div/div[2]/div[2]/div[4]
+
 
 
 
@@ -43,6 +60,7 @@ def main():
     openArgos()
 
 main()
+
 
 
 
