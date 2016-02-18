@@ -1,5 +1,6 @@
 #! python3
 # Program to query Argos to determine if someone is a non-degree completer
+# 2/18/2016 Paused the development of this to see if there was a quicker solution
 #
 import threading, time, getpass, logging
 # bs4
@@ -53,7 +54,7 @@ def openArgos():
     #Search = cbrowser.find_element_by_xpath("//*[@id=\"datablock\"]/div[5]/div[1]/div[18]/div/span")
     #Search = WebDriverWait(cbrowser,2).until(EC.element_to_be_clickable((By.XPATH,"//*[@id=\"datablock\"]/div[5]/div[1]/div[18]/div/span")))
     #Search.click()
-    print(cbrowser.find_element_by_xpath("//*[@id=\"datablock\"]/div[5]/div[6]/div[25]/div[4]/div/div[1]/div[2]/div/div[2]").text)
+    print(WebDriverWait(cbrowser,4).until(EC.element_to_be_clickable((By.XPATH,"//*[@id=\"datablock\"]/div[5]/div[6]/div[25]/div[4]/div/div[1]/div[2]/div/div[2]"))).text)
 
 
 def main():

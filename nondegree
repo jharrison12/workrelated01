@@ -1,0 +1,30 @@
+#
+# File to open an excel document, read the courses taken and determine whether someone is in fact
+# a non-degree completer
+#
+
+import openpyxl, os, logging
+logging.basicConfig(level=logging.DEBUG, format=' %(asctime)s - %(levelname)s- %(message)s')
+
+os.chdir("M:\Assessment (New)")
+
+wb = openpyxl.load_workbook("Working Document for Certificate Completion.xlsx")
+logging.debug("Has opened excel")
+
+sheet = wb.get_sheet_by_name('Student')
+studentClassesTaken = []
+ellEndorsementCourses = [5053, 5043, 5033, 5033]
+
+print(sheet.cell(row=4, column=4).value)
+
+for i in range(1, sheet.get_highest_row()+1):
+    if sheet.cell(row=i, column=4).value in ellEndorsementCourses:
+        studentClassesTaken.append(sheet.cell(row=i, column=4).value)
+    else:
+        continue
+
+print(studentClassesTaken)
+
+
+if set(ellEndorsementCourses) == set(studentClassesTaken):
+    print("SHE IS A COMPLETER!")
