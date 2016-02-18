@@ -44,7 +44,7 @@ def openArgos():
     Search.click()
     #TODO maybe try except clause here
     for i in range(1,10):
-        if cbrowser.find_element_by_xpath("//*[@id=\"datablock\"]/div[5]/div[1]/div[25]/div[12]/div/div[1]/div[2]/div/div[2]/div[" + str(i) + "]/div[4]").text == "G":
+        if WebDriverWait(cbrowser,4).until(EC.element_to_be_clickable((By.XPATH, "//*[@id=\"datablock\"]/div[5]/div[1]/div[25]/div[12]/div/div[1]/div[2]/div/div[2]/div[" + str(i) + "]/div[4]"))).text == "G":
             cbrowser.find_element_by_xpath("//*[@id=\"datablock\"]/div[5]/div[1]/div[25]/div[12]/div/div[1]/div[2]/div/div[2]/div[" + str(i) + "]/div[4]").click()
         else:
             continue
