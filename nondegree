@@ -18,11 +18,12 @@ logging.debug("Has opened excel")
 #to finish a program
 
 nonDegreeStudents = wb.get_sheet_by_name("NonDegree")
+#Dictionary that will contain the L# and the program
 studentprogram = {}
-studentClassesTaken = []
 
-#TODO add all non-degree programs
-ellEndorsementCourses = [5053, 5043, 5033, 5033]
+
+#TODO add all non-degree programs courses
+ellEndorsementCourses = [5053, 5043, 5013, 5033]
 
 #Create the dict with the L# (key) and program(value)
 for row in range(1, nonDegreeStudents.get_highest_row()+1):
@@ -31,29 +32,25 @@ for row in range(1, nonDegreeStudents.get_highest_row()+1):
     studentprogram[lnumber] = program
 
 print(studentprogram)
-try:
-    for lnumber in range(1, nonDegreeStudents.get_highest_row() +1):
-        lnumbersheet = wb.get_sheet_by_name(studentprogram[lnumber])
-        checkcompleter(lnumbersheet, studentprogram[lnumber],lnumber)
-
-except:
-    pass
-
 
 def checkcompleter(lnumbersheet, program, lnumber):
+    logging.debug("In check completer function")
     studentClassesTaken = []
-    for row in range(1, lnumber.get_highest_row() + 1):
-        if lnumber.cell(row=row, column=4).value in program:
-            studentClassesTaken.append(lnumber.cell(row=i, column=4).value)
+    for i in range(1, lnumbersheet.get_highest_row() + 1):
+        if lnumbersheet.cell(row=i, column=4).value in program:
+            studentClassesTaken.append(lnumbersheet.cell(row=i, column=4).value)
         else:
             continue
-    if set(program) == set(studentClassesTaken)
+    print(studentClassesTaken, program,)
+
+    if set(program) == set(studentClassesTaken):
         #Update dictionary to replace program with "completer"
         studentprogram[lnumber] = "Completer"
+        #iterate over nonDegreeStudents and update the Completer? Column
         for rownum in range(2, nonDegreeStudents.get_highest_row()):
             studentlnumber = nonDegreeStudents.cell(row=rownum, column=7).value
             if lnumber in studentprogram:
-                nonDegreeStudents.cell(row=rownum, column=8).value = studentprogram[lnumber]
+                nonDegreeStudents.cell(row=rownum, column=6).value = studentprogram[lnumber]
             else:
                 continue
     else:
@@ -61,11 +58,32 @@ def checkcompleter(lnumbersheet, program, lnumber):
         for rownum in range(2, nonDegreeStudents.get_highest_row()):
             studentlnumber = nonDegreeStudents.cell(row=rownum, column=7).value
             if lnumber in studentprogram:
-                nonDegreeStudents.cell(row=rownum, column=8).value = studentprogram[lnumber]
+                nonDegreeStudents.cell(row=rownum, column=6).value = studentprogram[lnumber]
             else:
                 continue
 
+try:
+    logging.debug("In try, except statement")
+    for key,val in studentprogram.items():
+        try:
+            lnumbersheet = wb.get_sheet_by_name(key)
+            print(lnumbersheet, ellEndorsementCourses, key)
+            checkcompleter(lnumbersheet,ellEndorsementCourses,key)
+            logging.debug("Function exited")
+            wb.save('WorkingDoc.xlsx')
+        except:
+            pass
+except:
+    pass
+
+
 """
+    for row in range(1, nonDegreeStudents.get_highest_row() +1):
+        lnumber = nonDegreeStudents.cell(row=row, column=7).value
+        lnumbersheet = wb.get_sheet_by_name(studentprogram[lnumber])
+        print(lnumbersheet)
+        checkcompleter(lnumbersheet, studentprogram[lnumber],lnumber)
+
 for rowNum in range(2, sheet.get_highest_row()):  # skip the first row
      produceName = sheet.cell(row=rowNum, column=1).value
      if produceName in PRICE_UPDATES:
