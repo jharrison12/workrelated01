@@ -1,9 +1,10 @@
 #
 # File to open an excel document, read the courses taken and determine whether someone is in fact
 # a non-degree completer
-#
+#Created by Jonathan Harrison on 2/23/2016
 
 import openpyxl, os, logging
+
 logging.basicConfig(level=logging.DEBUG, format=' %(asctime)s - %(levelname)s- %(message)s')
 
 os.chdir("M:\Assessment (New)")
@@ -11,20 +12,34 @@ os.chdir("M:\Assessment (New)")
 wb = openpyxl.load_workbook("Working Document for Certificate Completion.xlsx")
 logging.debug("Has opened excel")
 
-sheet = wb.get_sheet_by_name('Student')
+#ToDO go through each name in the Nondegree spreadsheet and
+#add the students program to a dictionary that equals
+#the variable names of the classes they need
+#to finish a program
+
+nonDegreeStudents = wb.get_sheet_by_name("NonDegree")
+studentprogram = {}
 studentClassesTaken = []
 ellEndorsementCourses = [5053, 5043, 5033, 5033]
 
-print(sheet.cell(row=4, column=4).value)
+for row in range(1, nonDegreeStudents.get_highest_row()+1):
+    lnumber = nonDegreeStudents['G' + str(row)].value
+    program = nonDegreeStudents['AA' + str(row)].value
+    studentprogram[lnumber] = program
 
-for i in range(1, sheet.get_highest_row()+1):
-    if sheet.cell(row=i, column=4).value in ellEndorsementCourses:
-        studentClassesTaken.append(sheet.cell(row=i, column=4).value)
-    else:
-        continue
+print(studentprogram)
+try:
+
+
+def checkcompleter(student, lnumber):
+    
+    for i in range(1, sheet.get_highest_row() + 1):
+        if sheet.cell(row=i, column=4).value in ellEndorsementCourses:
+            studentClassesTaken.append(sheet.cell(row=i, column=4).value)
+        else:
+            continue
+    if set(ellEndorsementCourses) == set(studentClassesTaken):
+        print("SHE IS A COMPLETER!")
+
 
 print(studentClassesTaken)
-
-
-if set(ellEndorsementCourses) == set(studentClassesTaken):
-    print("SHE IS A COMPLETER!")
