@@ -1,7 +1,7 @@
 #
 # File to open an excel document, read the courses taken and determine whether someone is in fact
 # a non-degree completer
-#Created by Jonathan Harrison on 2/23/2016
+# Created by Jonathan Harrison on 2/23/2016
 
 import openpyxl, os, logging
 
@@ -12,76 +12,85 @@ os.chdir("M:\Assessment (New)")
 wb = openpyxl.load_workbook("Working Document for Certificate Completion.xlsx")
 logging.debug("Has opened excel")
 
-#ToDO go through each name in the Nondegree spreadsheet and
-#add the students program to a dictionary that equals
-#the variable names of the classes they need
-#to finish a program
+# ToDO go through each name in the Nondegree spreadsheet and
+# add the students program to a dictionary that equals
+# the variable names of the classes they need
+# to finish a program
 
 nonDegreeStudents = wb.get_sheet_by_name("NonDegree")
-#Dictionary that will contain the L# and the program
+# Dictionary that will contain the L# and the program
 studentprogram = {}
 
+completionCourses = {'ELL Endorsement Program': {'M.Ed.': [5053, 5043, 5013, 5033], 'Ed.S.': [6013, 6043, 6033, 6053]},
+                     "Reading Specialty Endrsmt Prog": {"M.Ed.": [5743, 5753, 5763, 5773, 5783],
+                                                        "Ed.S.": [6743, 6753, 6763, 6773, 6783]},
+                     "Special Educ Endorsement Progr": {"M.Ed.": [5023, 5033, 5043, 5053, 5213, 5223],
+                                                        "Ed.S": [6023, 6033, 6043, 6053, 6213, 6223]},
+                     "Gen Std:Appl Behavr Analy,Cert": {"M.Ed.": [5053, 5063, 5073, 5083, 5102, 5112]},
+                     "Instructional Coaching, Certif": {"M.Ed.": [5033, 5273, 5293, 5283],
+                                                        "Ed.S.": [6033, 6273, 6293, 6283]},
+                     # TODO figure out how to incorporate TLP or Transitional Classes
+                     "Teacher Licensure Program": {"M.Ed.": [5023, 5053, 5063, 5303, 5803]},
+                     # TODO Administrative Licenses has about 4 paths.  Figure out how to add this to the course progression
+                     "Administratve Licensure Progrm": {"M.Ed.": {"Path 1": [5233, 5253, 5333, 5551, 5562, 5003, 5663],
+                                                                  "Path 2": [5233, 5253, 5333, 5551, 5562, 5583, 5663]},
+                                                        "Ed.S.": [6233, 6253, 6333, 6483, 6551, 6662, 6583, 6903,
+                                                                  6913]}}
+# ToDO add Tech and Math Certificate
 
 
-completionCourses = {'ELL Endorsement Program': {'M.Ed.': [5053, 5043, 5013, 5033], 'Ed.S.': [6013, 6043, 6033, 6053] },
-                     "Reading Specialty Endrsmt Prog": {"M.Ed.": [5743,5753,5763,5773,5783], "Ed.S.": [6743,6753,6763,6773,6783]},
-                     "Special Educ Endorsement Progr": {"M.Ed.": [5023,5033,5043,5053,5213,5223], "Ed.S": [6023,6033,6043,6053,6213,6223]},
-                     "Gen Std:Appl Behavr Analy,Cert": {"M.Ed." :[5053,5063,5073,5083,5102,5112]},
-                     "Instructional Coaching, Certif": {"M.Ed.":[5033,5273,5293,5283], "Ed.S.": [6033,6273,6293,6283]},
-                     #TODO figure out how to incorporate TLP or Transitional Classes
-                     "Teacher Licensure Program": {"M.Ed.":[5023,5053,5063,5303,5803]},
-                     #TODO Administrative Licenses has about 4 paths.  Figure out how to add this to the course progression
-                     "Administratve Licensure Progrm": {"M.Ed.": {"Path 1": [5233,5253,5333,5551,5562,5003,5663], "Path 2": [5233,5253,5333,5551,5562,5583,5663]}, "Ed.S.": [6233,6253,6333,6483,6551,6662,6583,6903,6913]}}
-                     #ToDO add Tech and Math Certificate
-
-
-#Create the studenprogram dict with the L# (key) and program(value)
-for row in range(2, nonDegreeStudents.get_highest_row()+1):
+# Create the studenprogram dict with the L# (key) and program(value)
+for row in range(2, nonDegreeStudents.get_highest_row() + 1):
     lnumber = nonDegreeStudents['G' + str(row)].value
     program = nonDegreeStudents['AA' + str(row)].value
     studentprogram[lnumber] = program
 
 logging.debug(studentprogram)
 
-#TODO add M.Ed. or Ed.S. and then map to a degree dictionary (2/23/2016)
+
+# TODO add M.Ed. or Ed.S. and then map to a degree dictionary (2/23/2016)
 def checkcompleter(lnumbersheet, program, lnumber, programname):
     studentclassestaken = []
-    #Iterate over classes in the file and check to see if they appear in the program dictionary
+    # Iterate over classes in the file and check to see if they appear in the program dictionary
     if programname == "Administratve Licensure Progrm":
         for i in range(1, lnumbersheet.get_highest_row() + 1):
             logging.debug("Iteration %d of the for loop for Admin License", i)
             if lnumbersheet.cell(row=i, column=4).value in program["M.Ed."]["Path 1"] \
-                or lnumbersheet.cell(row=i, column=4).value in program["M.Ed."]["Path 2"] \
-                or lnumbersheet.cell(row=i, column=4).value in program["Ed.S."]:
-                    studentclassestaken.append(lnumbersheet.cell(row=i, column=4).value)
+                    or lnumbersheet.cell(row=i, column=4).value in program["M.Ed."]["Path 2"] \
+                    or lnumbersheet.cell(row=i, column=4).value in program["Ed.S."]:
+                studentclassestaken.append(lnumbersheet.cell(row=i, column=4).value)
             else:
                 continue
     else:
         for i in range(1, lnumbersheet.get_highest_row() + 1):
-            if lnumbersheet.cell(row=i, column=4).value in program["M.Ed."] or lnumbersheet.cell(row=i, column=4).value in program["Ed.S."]:
+            if lnumbersheet.cell(row=i, column=4).value in program["M.Ed."] or lnumbersheet.cell(row=i,
+                                                                                                 column=4).value in \
+                    program["Ed.S."]:
                 studentclassestaken.append(lnumbersheet.cell(row=i, column=4).value)
             else:
                 continue
-
-    #TODO Fix this monstrous if, or statement.
-    if ((set(program["M.Ed."]) <= set(studentclassestaken)) \
-    or (set(program["Ed.S."]) <= set(studentclassestaken)) \
-    or (set(program["M.Ed."]["Path 1"]) <= set(studentclassestaken))\
-    or (set(program["M.Ed."]["Path 2"]) <= set(studentclassestaken))\
-    or (set(program["Ed.S."]["Path 1"]) <= set(studentclassestaken))):
+    logging.info("%s classes added to studentclassestaken.  Classes taken are %s", lnumber, studentclassestaken)
+    # TODO Fix this monstrous if, else statement.
+    if set(program["M.Ed."]) <= set(studentclassestaken) \
+            or set(program["Ed.S."]) <= set(studentclassestaken) \
+            or set(program["M.Ed."]["Path 1"]) <= set(studentclassestaken) \
+            or set(program["M.Ed."]["Path 2"]) <= set(studentclassestaken) \
+            or set(program["Ed.S."]["Path 1"]) <= set(studentclassestaken):
         studentprogram[lnumber] = "Completer"
     else:
         studentprogram[lnumber] = "Not a completer"
-    logging.info("%s Classes Taken: %s.  Classes Needed: %s. Lnumber is a %s", lnumber, set(studentclassestaken), set(program["M.Ed."]["Path 1"]), studentprogram[lnumber])
+
+    logging.info("%s Classes Taken: %s.  Classes Needed: %s. Lnumber is a %s", lnumber, set(studentclassestaken),
+                 set(program["M.Ed."]["Path 1"]), studentprogram[lnumber])
 
 
 try:
     logging.debug("In try, except statement")
-    for key,val in studentprogram.items():
+    for key, val in studentprogram.items():
         try:
             lnumbersheet = wb.get_sheet_by_name(key)
             logging.info("Passing to function %s, %s, %s, %s", lnumbersheet, completionCourses[val], key, val)
-            checkcompleter(lnumbersheet,completionCourses[val],key, val)
+            checkcompleter(lnumbersheet, completionCourses[val], key, val)
             logging.debug("Function exited")
         except:
             pass
@@ -89,8 +98,8 @@ except:
     pass
 
 logging.debug("Writing to document")
-#Iterate over the entire row and update the cell basedupon the dictionary studentprogram
-for rownum in range(2, nonDegreeStudents.get_highest_row()+1):
+# Iterate over the entire row and update the cell basedupon the dictionary studentprogram
+for rownum in range(2, nonDegreeStudents.get_highest_row() + 1):
     studentlnumber = nonDegreeStudents.cell(row=rownum, column=7).value
     if studentlnumber in studentprogram:
         nonDegreeStudents.cell(row=rownum, column=6).value = studentprogram[studentlnumber]
