@@ -71,14 +71,14 @@ def checkcompleter(lnumbersheet, program, lnumber, programname):
                 continue
     logging.info("%s classes added to studentclassestaken.  Classes taken are %s", lnumber, studentclassestaken)
     # TODO Fix this monstrous if, else statement.
-    if set(program["M.Ed."]) <= set(studentclassestaken) \
-            or set(program["Ed.S."]) <= set(studentclassestaken) \
-            or set(program["M.Ed."]["Path 1"]) <= set(studentclassestaken) \
-            or set(program["M.Ed."]["Path 2"]) <= set(studentclassestaken) \
-            or set(program["Ed.S."]["Path 1"]) <= set(studentclassestaken):
+    if set(program["M.Ed."]) == set(studentclassestaken) \
+            or set(program["Ed.S."]) == set(studentclassestaken) \
+            or set(program["M.Ed."]["Path 1"]) == set(studentclassestaken) \
+            or set(program["M.Ed."]["Path 2"]) == set(studentclassestaken):
         studentprogram[lnumber] = "Completer"
     else:
         studentprogram[lnumber] = "Not a completer"
+         #TODO 2/25/2016 if else statement is never entering the else branch
 
     logging.info("%s Classes Taken: %s.  Classes Needed: %s. Lnumber is a %s", lnumber, set(studentclassestaken),
                  set(program["M.Ed."]["Path 1"]), studentprogram[lnumber])
