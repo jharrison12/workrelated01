@@ -19,7 +19,7 @@ browser.get(url)
 username = browser.find_element_by_id("ContentPlaceHolder1_txtUserID")
 password = browser.find_element_by_id("ContentPlaceHolder1_txtPassword")
 
-# insert the username and password (can we mask this????)
+# insert the username and password 
 uname = input("Please input your username \n")
 username.send_keys(uname)
 pword = getpass.getpass("Please Enter Password \n")
