@@ -1,8 +1,7 @@
 """
-File that checks a student's id and semester versus the previous row id and semester.
+File that checks a how many students matriculated from ICC into other programs
 This only works if the id column is sorted and the semester column is sorted based upon the student id
-Student id must be in row F, Semester Code must be in row B and the semester codes are static in the dict below
-(not ideal).
+
 
 Also you must have two or three previous semesters included before the semester you want to start measuring.
 Why?  Because you must capture the returning students but you cannot do that if you don't have the semester they
@@ -16,7 +15,7 @@ logging.basicConfig(level=logging.DEBUG, format=' %(asctime)s - %(levelname)s- %
 
 os.chdir("M:\Working Folder")
 
-wb = openpyxl.load_workbook("EnrollmentFall2013-Present.xlsx")
+wb = openpyxl.load_workbook("ICMATRICULATION.xlsx")
 logging.debug("Has opened excel")
 
 sheet = wb.get_active_sheet()
@@ -30,23 +29,26 @@ semesterdict = {'201710': '201630', "201630": "201620",
                 "201310": "201230", "201230": "201220",
                 "201220": "201210"}
 
+iccdict = ["Instructional Coaching, Certif", "Instructional Coaching, EdS","Instructional Coaching, MED"]
+matriculator = 0
+
 # This will leave row 1 empty
 for row in range(3, sheet.max_row + 1):
     id = sheet['F' + str(row)].value
+    program = sheet['Z' + str(row)].value
     # logging.DEBUG('Found id {}'.format(id))
     # logging.DEBUG("Working on row {}".format(row))
-    # If previous row id is the same and semester is previous semester
-    # then the student is continuing
-    if (sheet['F' + str(row - 1)].value == id) and (
-                sheet['B' + str(row - 1)].value == semesterdict[sheet['B' + str(row)].value]) and (
-        sheet['Z' + str(row - 1)].value == sheet['Z' + str(row)].value):
-        sheet['G' + str(row)].value = 'C'
-    # Otherwise they are returning
-    elif (sheet['F' + str(row - 1)].value == id) and (
-        sheet['Z' + str(row - 1)].value == sheet['Z' + str(row)].value):
-        sheet['G' + str(row)].value = 'R'
-    # if the previous row is a different id student is a beginner
+    # if student is instructional coaching
+    if program in iccdict:
+        if (sheet['F' + str(row + 1)].value == id) and (sheet['Z'+ str(row + 1)].value not in iccdict):
+            matriculator += 1
+            sheet['AA'+ str(row)].value = 'Y'
     else:
-        sheet['G' + str(row)].value = "B"
+        pass
+    # Otherwise they are returning
+
+print(matriculator)
+
 
 wb.save("testfile.xlsx")
+
