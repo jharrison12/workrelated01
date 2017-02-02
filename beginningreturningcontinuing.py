@@ -14,14 +14,14 @@ import openpyxl, os, logging, collections
 
 logging.basicConfig(level=logging.DEBUG, format=' %(asctime)s - %(levelname)s- %(message)s')
 
-os.chdir("M:\Working Folder")
+os.chdir('M:\Rentention\\')
 
-wb = openpyxl.load_workbook("EnrollmentFall2013-Present.xlsx")
+wb = openpyxl.load_workbook("EnrollmentfileforBCR.xlsx")
 logging.debug("Has opened excel")
 
 sheet = wb.get_active_sheet()
 
-semesterdict = {'201710': '201630', "201630": "201620",
+semesterdict = {'201720': '201710','201710': '201630', "201630": "201620",
                 "201620": "201610", "201610": "201530",
                 "201530": "201520", "201520": "201510",
                 "201510": "201430", "201430": "201420",
@@ -45,8 +45,19 @@ for row in range(3, sheet.max_row + 1):
     elif (sheet['F' + str(row - 1)].value == id) and (
         sheet['Z' + str(row - 1)].value == sheet['Z' + str(row)].value):
         sheet['G' + str(row)].value = 'R'
+    #If Program is different, but ID is the same
+	#and semester is not consecutive. They are returning new
+    elif (sheet['F' + str(row-1)].value==id) and (
+          sheet['B' + str(row - 1)].value != semesterdict[sheet['B' + str(row)].value]) and (
+          sheet['Z' + str(row - 1)].value != sheet['Z' + str(row)].value):
+          sheet['G'+str(row)].value="RN"
+	#Otherwise if they id is the same and the program is not the came then they
+	#must have switched programs since semesters will be consecutive
+    elif (sheet['F' + str(row-1)].value==id) and (
+        sheet['Z' + str(row - 1)].value != sheet['Z' + str(row)].value):
+        sheet['G'+str(row)].value= "S"
     # if the previous row is a different id student is a beginner
     else:
         sheet['G' + str(row)].value = "B"
 
-wb.save("testfile.xlsx")
+wb.save("testfile1.xlsx")
