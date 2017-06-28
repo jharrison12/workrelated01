@@ -12,7 +12,7 @@ started.
 
 import openpyxl, os, logging, collections
 
-logging.basicConfig(level=logging.DEBUG, format=' %(asctime)s - %(levelname)s- %(message)s')
+#logging.basicConfig(level=logging.DEBUG, format=' %(asctime)s - %(levelname)s- %(message)s')
 
 os.chdir('M:\Rentention\\')
 
@@ -21,7 +21,7 @@ logging.debug("Has opened excel")
 
 sheet = wb.get_active_sheet()
 
-semesterdict = {'201720': '201710','201710': '201630', "201630": "201620",
+semesterdict = {"201730": "201720",'201720': '201710','201710': '201630', "201630": "201620",
                 "201620": "201610", "201610": "201530",
                 "201530": "201520", "201520": "201510",
                 "201510": "201430", "201430": "201420",
