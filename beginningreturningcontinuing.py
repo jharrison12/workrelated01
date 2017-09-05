@@ -8,6 +8,8 @@ Also you must have two or three previous semesters included before the semester 
 Why?  Because you must capture the returning students but you cannot do that if you don't have the semester they
 started.
 
+Also you must make sure that you the column name line up with the column letters mentioned in the for each loop below. 
+
 """
 
 import openpyxl, os, logging, collections
@@ -37,8 +39,7 @@ for row in range(3, sheet.max_row + 1):
     # logging.DEBUG("Working on row {}".format(row))
     # If previous row id is the same and semester is previous semester
     # then the student is continuing
-    if (sheet['F' + str(row - 1)].value == id) and (
-                sheet['B' + str(row - 1)].value == semesterdict[sheet['B' + str(row)].value]) and (
+    if (sheet['F' + str(row - 1)].value == id) and (sheet['B' + str(row - 1)].value == semesterdict[sheet['B' + str(row)].value]) and (
         sheet['Z' + str(row - 1)].value == sheet['Z' + str(row)].value):
         sheet['G' + str(row)].value = 'C'
     # Otherwise they are returning
