@@ -26,9 +26,8 @@ admin = ["5233","5333","5253","5483","5551","5562","5583","5663"] #add logic for
 admineds = ["6233","6333","6253","6483","6551","6562","6583","6903", "6913"]
 
 """
-TODO:Maybe check if the subect area if correct. 
+TODO: Maybe check if the subect area if correct. 
 TODO: Are we sure it checks the last semester of the course in the program courses?
-TODO: Fix that its only showing non-degree and not degree students who have takent the courses
 
 """
 
@@ -51,13 +50,14 @@ def classcompare(edclasses, programclasses):
 def programcheck(programclasses, yearandprogram):
 	#This method will find the last semester that they were enrolled in a program if classcompare
 	#returns true.  It will then add the program name and the semester to the programs dictionary
-	#If a student is in a degree-seeking program and completes the requisite courses
+	#If a student is in a degree-seeking program and completes the requisite non-degree courses
 	#they WILL be captured by this method. 
 	info = {v:x for x,v in [yearandprogram.get(key) for key in programclasses]if x is not None}
-	logging.warning("INFO looks likes {}".format(info))
+	logging.debug("INFO looks likes {}".format(info))
 	finalyear = max([element for element in info.keys()])
 	programname = info[finalyear] 
 	programs[programname][finalyear] += 1
+
 	
 for row in range(2, sheet.max_row+1):
 	id = sheet['B' + str(row)].value
@@ -110,7 +110,12 @@ for row in range(2, sheet.max_row+1):
 			programcheck(admineds,yearandprogram)
 		studentclasses = {}
 		yearandprogram = {}
-		
 
+
+#The dict comprehension will only pull the programs if they match the program names below. So if a program name ELL Endorsement instead of ELL Endorsement Program.
+#it will not be pulled
+programs = {k:v for k,v in programs.items() if k in ["Admin License", "ELL Endorsement Program", "Instructional Coaching Certificate", 
+													"Reading Endorsement", "Teacher Licensure Program", "Gen Std:Appl Behavr Analy,Cert", 
+													"Instructional Coaching, Certif"]}
 
 pprint.pprint(programs)
