@@ -8,7 +8,7 @@ logging.basicConfig(level=logging.WARNING, format=' %(asctime)s - %(levelname)s-
 
 os.chdir('M:\Rentention\\Nondegree Python Project\\')
 
-wb = openpyxl.load_workbook("AllData.xlsx")
+wb = openpyxl.load_workbook("AlLData.xlsx")
 
 sheet = wb.get_active_sheet()
 studentclasses = {}
@@ -16,14 +16,18 @@ yearandprogram = {}
 
 programs = collections.defaultdict(lambda: collections.defaultdict(int))
 
-ellmed = ["5013","5033","5043","5053"]
-elleds = ["6013","6033","6043","6053"]
-icc = ["5033","5273","5293","5283"]
-icceds = ["6033","6273","6293","6283"]
-reading = ["5743", "5753","5763","5773","5783"]
-readingeds = ["6743", "6753","6763","6773","6783"]
-admin = ["5233","5333","5253","5483","5551","5562","5583","5663"] #add logic for ICM 5003
-admineds = ["6233","6333","6253","6483","6551","6562","6583","6903", "6913"]
+ellmed = ["EGEL5013","EGEL5033","EGEL5043","EGEL5053"]
+elleds = ["EGEL6013","EGEL6033","EGEL6043","EGEL6053"]
+icc = ["EG5033","EG5273","EG5293","EG5283"]
+icceds = ["EG6033","EG6273","EG6293","EG6283"]
+reading = ["EG5743", "EG5753","EG5763","EG5773","EG5783"]
+readingeds = ["EG6743", "EG6753","EG6763","EG6773","EG6783"]
+admin = ["EG5233","EG5333","EG5253","EG5483","EG5551","EG5562","EG5583","EG5663"] #ICM 5003 no longer offered
+admineds = ["EG6233","EG6333","EG6253","EG6483","EG6551","EG6562","EG6583","EG6903", "EG6913"]
+abacert = ["EGSE5053", "EGSE5063", "EGSE5073", "EGSE5083", "EGSE5102", "EGSE5112"]
+profabacert = ["EGSE5053", "EGSE5063", "EGSE5073", "EGSE5083", "EGSE5102", "EGSE5112", "EGSE5133", "EGSE5143", "EGSE5122"]
+spedendorse = ["EGSE5023", "EGSE 5033", "EGSE5043", "EGSE5053", "EGSE5213", "EGSE5223"]
+
 
 """
 TODO: Maybe check if the subect area if correct. 
@@ -66,7 +70,9 @@ for row in range(2, sheet.max_row+1):
 	grade = sheet['AS' + str(row)].value
 	program = sheet['AB' + str(row)].value
 	year = sheet['AE' + str(row)].value
-	logging.debug("Row {}: Year: {} Class: {}".format(row,year, classnumber))
+	subjectcode = sheet['AJ' + str(row)].value
+	classnumber = subjectcode + classnumber
+	logging.warning("Row {}: Year: {} Class: {}".format(row,year, classnumber))
 	if(id==nextid):
 		yearandprogram[classnumber] = [program, year]
 		studentclasses[classnumber] = grade
@@ -108,6 +114,12 @@ for row in range(2, sheet.max_row+1):
 			programcheck(admin,yearandprogram)		
 		elif (classcompare(studentclasses,admineds)):
 			programcheck(admineds,yearandprogram)
+		elif (classcompare(studentclasses,abacert)):
+			programcheck(abacert,yearandprogram)		
+		elif (classcompare(studentclasses,profabacert)):
+			programcheck(profabacert,yearandprogram)		
+		elif (classcompare(studentclasses,spedendorse)):
+			programcheck(spedendorse,yearandprogram)
 		studentclasses = {}
 		yearandprogram = {}
 
