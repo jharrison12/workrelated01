@@ -98,6 +98,10 @@ for row in range(2, sheet.max_row+1):
 			#If the student has not taken ST  try block will cause an index out of bound error
 			except:
 				pass
+		elif (classcompare(studentclasses, ["EG513V"])):
+			info = [x for x in [yearandprogram.get(key) for key in ["EG513V"]] if x is not None]
+			newprogram = info[0][0]
+			programs[newprogram]["TOOK TLM: TO CHECK"] += 1
 		elif (classcompare(studentclasses,ellmed)):
 			programcheck(ellmed,yearandprogram)
 		elif (classcompare(studentclasses, elleds)):
