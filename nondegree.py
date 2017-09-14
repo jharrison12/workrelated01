@@ -30,7 +30,7 @@ spedendorse = ["EGSE5023", "EGSE 5033", "EGSE5043", "EGSE5053", "EGSE5213", "EGS
 
 
 """
-TODO: Maybe check if the subect area if correct. 
+TODO: Check on TLM.  How do we do this? 
 TODO: Are we sure it checks the last semester of the course in the program courses?
 
 """
@@ -85,10 +85,10 @@ for row in range(2, sheet.max_row+1):
 		studentclasses = checkforf(studentclasses)
 		logging.debug(studentclasses)
 		#Checks to see if student has passed student teaching
-		if (classcompare(studentclasses, ["4403"])
-		 or classcompare(studentclasses, ["5417"])):
+		if (classcompare(studentclasses, ["EG4403"])
+		 or classcompare(studentclasses, ["EG5417"])):
 			#Returns the list with the correct program and class number by ignoring None
-			info = [x for x in [yearandprogram.get(key) for key in ["5417","4403"]] if x is not None]
+			info = [x for x in [yearandprogram.get(key) for key in ["EG5417","ED4403"]] if x is not None]
 			logging.debug("{}".format(info))
 			try:
 				newyear = info[0][1]
