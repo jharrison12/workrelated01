@@ -8,7 +8,7 @@ logging.basicConfig(level=logging.WARNING, format=' %(asctime)s - %(levelname)s-
 
 os.chdir('M:\Rentention\\Nondegree Python Project\\')
 
-wb = openpyxl.load_workbook("AlLData.xlsx")
+wb = openpyxl.load_workbook("AllData.xlsx")
 
 sheet = wb.get_active_sheet()
 studentclasses = {}
@@ -37,9 +37,13 @@ TODO: Are we sure it checks the last semester of the course in the program cours
 
 #Method that removes failing and incomplete classes from student's dict
 def checkforf(edclasses):
-	logging.debug("EDCLASSES {}".format(edclasses))
-	newclasses = {k:v for k,v in edclasses.items() if (edclasses[k] != "F") or (edclasses[k] != "I") or(edclasses[k] != None)}
-	logging.debug("NEWCLASSES {}".format(newclasses))
+	logging.warning("\nEDCLASSES {} \n Length: {}\n".format(edclasses.items(), len(edclasses)))
+	logging.debug(edclasses.items())
+	# The logic  in the dict comprehension does not work for if ((v != 'F') or (v!= "I") or(v != None) but does work for the 
+	# The line below the commented line
+	#newclasses = {k:v for k,v in edclasses.items()} if ((v != 'F') or (v!= "I") or(v != None))}
+	newclasses = {k:v for (k,v) in edclasses.items() if v not in ["F", "I", None]}
+	logging.warning("\nNEWCLASSES {}\n Lenght: {}\n".format(newclasses,len(newclasses)))
 	return newclasses
 	
 def classcompare(edclasses, programclasses):
@@ -72,7 +76,7 @@ for row in range(2, sheet.max_row+1):
 	year = sheet['AE' + str(row)].value
 	subjectcode = sheet['AJ' + str(row)].value
 	classnumber = subjectcode + classnumber
-	logging.warning("Row {}: Year: {} Class: {}".format(row,year, classnumber))
+	logging.debug("Row {}: Year: {} Class: {}".format(row,year, classnumber))
 	if(id==nextid):
 		yearandprogram[classnumber] = [program, year]
 		studentclasses[classnumber] = grade
@@ -83,7 +87,7 @@ for row in range(2, sheet.max_row+1):
 		yearandprogram[classnumber] = [program, year]
 		logging.debug("YEAR AND PROGRAM {}\n\n".format(yearandprogram))
 		studentclasses = checkforf(studentclasses)
-		logging.debug(studentclasses)
+		logging.debug("\n \n {}".format(studentclasses))
 		#Checks to see if student has passed student teaching
 		if (classcompare(studentclasses, ["EG4403"])
 		 or classcompare(studentclasses, ["EG5417"])):
