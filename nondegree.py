@@ -32,18 +32,21 @@ spedendorse = ["EGSE5023", "EGSE 5033", "EGSE5043", "EGSE5053", "EGSE5213", "EGS
 """
 TODO: Check on TLM.  How do we do this? 
 TODO: Are we sure it checks the last semester of the course in the program courses?
+TODO: Check if logic of checking for switching programs (line 84) actually works. 
+
 
 """
 
 #Method that removes failing and incomplete classes from student's dict
 def checkforf(edclasses):
-	logging.warning("\nEDCLASSES {} \n Length: {}\n".format(edclasses.items(), len(edclasses)))
+	logging.debug("\nEDCLASSES {} \n Length: {}\n".format(edclasses.items(), len(edclasses)))
 	logging.debug(edclasses.items())
-	# The logic  in the dict comprehension does not work for if ((v != 'F') or (v!= "I") or(v != None) but does work for the 
+	# The logic  in the dict comprehension does not work for if 
+	#((v != 'F') or (v!= "I") or(v != None) but does work for the 
 	# The line below the commented line
 	#newclasses = {k:v for k,v in edclasses.items()} if ((v != 'F') or (v!= "I") or(v != None))}
 	newclasses = {k:v for (k,v) in edclasses.items() if v not in ["F", "I", None]}
-	logging.warning("\nNEWCLASSES {}\n Lenght: {}\n".format(newclasses,len(newclasses)))
+	logging.debug("\nNEWCLASSES {}\n Lenght: {}\n".format(newclasses,len(newclasses)))
 	return newclasses
 	
 def classcompare(edclasses, programclasses):
@@ -73,11 +76,12 @@ for row in range(2, sheet.max_row+1):
 	classnumber = str(sheet['AK'+str(row)].value)
 	grade = sheet['AS' + str(row)].value
 	program = sheet['AB' + str(row)].value
+	nextprogram = sheet['AB' + str(row+1)].value
 	year = sheet['AE' + str(row)].value
 	subjectcode = sheet['AJ' + str(row)].value
 	classnumber = subjectcode + classnumber
 	logging.debug("Row {}: Year: {} Class: {}".format(row,year, classnumber))
-	if(id==nextid):
+	if(id==nextid) and (program==nextprogram):
 		yearandprogram[classnumber] = [program, year]
 		studentclasses[classnumber] = grade
 		logging.debug('Adding {}\n'.format(classnumber))
