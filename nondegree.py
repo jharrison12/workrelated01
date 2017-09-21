@@ -34,6 +34,8 @@ TODO: Check on TLM.  How do we do this?
 TODO: Are we sure it checks the last semester of the course in the program courses?
 TODO: Check if logic of checking for switching programs (line 84) actually works. 
 
+You can't check whether a student switched programs because students have taken courses that apply for certificate progrmas under degree
+seeking programs. 
 
 """
 
@@ -81,7 +83,7 @@ for row in range(2, sheet.max_row+1):
 	subjectcode = sheet['AJ' + str(row)].value
 	classnumber = subjectcode + classnumber
 	logging.debug("Row {}: Year: {} Class: {}".format(row,year, classnumber))
-	if(id==nextid) and (program==nextprogram):
+	if(id==nextid):
 		yearandprogram[classnumber] = [program, year]
 		studentclasses[classnumber] = grade
 		logging.debug('Adding {}\n'.format(classnumber))
