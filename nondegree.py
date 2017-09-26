@@ -3,7 +3,7 @@ File that is supposed to check a students full class academic record.  If they c
 then tagged as a completer for the program.
 """
 
-import openpyxl, os, logging, collections,pprint
+import openpyxl, os, logging, collections,pprint, re
 logging.basicConfig(level=logging.WARNING, format=' %(asctime)s - %(levelname)s- %(message)s')
 
 os.chdir('M:\Rentention\\Nondegree Python Project\\')
@@ -16,23 +16,22 @@ yearandprogram = {}
 
 programs = collections.defaultdict(lambda: collections.defaultdict(int))
 
-ellmed = ["EGEL5013","EGEL5033","EGEL5043","EGEL5053"]
-elleds = ["EGEL6013","EGEL6033","EGEL6043","EGEL6053"]
-icc = ["EG5033","EG5273","EG5293","EG5283"]
-icceds = ["EG6033","EG6273","EG6293","EG6283"]
-reading = ["EG5743", "EG5753","EG5763","EG5773","EG5783"]
-readingeds = ["EG6743", "EG6753","EG6763","EG6773","EG6783"]
-admin = ["EG5233","EG5333","EG5253","EG5483","EG5551","EG5562","EG5583","EG5663"] #ICM 5003 no longer offered
-admineds = ["EG6233","EG6333","EG6253","EG6483","EG6551","EG6562","EG6583","EG6903", "EG6913"]
+
+#Must use regex as some students were allowed to switch from 5000 level to 6000 level mid-program
+ellmed = [re.compile("EGEL[5|6]013"),re.compile("EGEL[5|6]033"),re.compile("EGEL[5|6]043"),re.compile("EGEL[5|6]053")]
+icc = [re.compile("EG[5|6]033"),re.compile("EG[5|6]273"),re.compile("EG[5|6]293"),re.compile("EG[5|6]283")]
+reading = [re.compile("EG[5|6]743"),re.compile("EG[5|6]753"),re.compile("EG[5|6]763"),re.compile("EG[5|6]773"),re.compile("EG[5|6]783")]
+admin = [re.compile("EG[5|6]233"),re.compile("EG[5|6]333"),re.compile("EG[5|6]253"),
+		 re.compile("EG[5|6]483"),re.compile("EG[5|6]551"),re.compile("EG[5|6]562"),
+		 re.compile("EG[5|6]583"),re.compile("EG[5|6]663")] #ICM 5003 no longer offered
 abacert = ["EGSE5053", "EGSE5063", "EGSE5073", "EGSE5083", "EGSE5102", "EGSE5112"]
 profabacert = ["EGSE5053", "EGSE5063", "EGSE5073", "EGSE5083", "EGSE5102", "EGSE5112", "EGSE5133", "EGSE5143", "EGSE5122"]
 spedendorse = ["EGSE5023", "EGSE 5033", "EGSE5043", "EGSE5053", "EGSE5213", "EGSE5223"]
 
 
 """
-TODO: Check on TLM.  How do we do this? 
+ 
 TODO: Are we sure it checks the last semester of the course in the program courses?
-TODO: Check if logic of checking for switching programs (line 84) actually works. 
 
 You can't check whether a student switched programs because students have taken courses that apply for certificate progrmas under degree
 seeking programs. 
@@ -48,27 +47,51 @@ def checkforf(edclasses):
 	# The line below the commented line
 	#newclasses = {k:v for k,v in edclasses.items()} if ((v != 'F') or (v!= "I") or(v != None))}
 	newclasses = {k:v for (k,v) in edclasses.items() if v not in ["F", "I", None]}
-	logging.debug("\nNEWCLASSES {}\n Lenght: {}\n".format(newclasses,len(newclasses)))
+	logging.warning("\nNEWCLASSES {}\n Lenght: {}\n".format(newclasses,len(newclasses)))
 	return newclasses
 	
 def classcompare(edclasses, programclasses):
 	#This method will compare whether all the classes in a particular program are 
 	#found in a subset of all the classes that a student has taken
 	#This will return true if this is the case. 
-	set1 = set([element for element in edclasses.keys()])
-	set2 = set([element for element in programclasses])
-	logging.debug("SET1 {} \n\nSET 2 {} is {}\n\n".format(set1, set2, set2 <= set1))
-	return (set2 <= set1)
+	try:
+		for edclass in programclasses:
+			logging.debug("{} in programclasses".format(edclass))
+			if any(edclass.match(regex) for regex in edclasses):
+				logging.debug("ONE FOUND")
+				continue
+			else:
+				return False	
+		return True
+	except:
+		set1 = set([element for element in edclasses.keys()])
+		set2 = set([element for element in programclasses])
+		logging.debug("SET1 {} \n\nSET 2 {} is {}\n\n".format(set1, set2, set2 <= set1))
+		return set2 <= set1
+			
+		
 	
 def programcheck(programclasses, yearandprogram):
 	#This method will find the last semester that they were enrolled in a program if classcompare
 	#returns true.  It will then add the program name and the semester to the programs dictionary
 	#If a student is in a degree-seeking program and completes the requisite non-degree courses
-	#they WILL be captured by this method. 
-	info = {v:x for x,v in [yearandprogram.get(key) for key in programclasses]if x is not None}
+	#they WILL be captured by this method.
+	info = {}
+	logging.debug("\nYear and program:{} \n\n Programclasses{}\n".format(yearandprogram, programclasses))
+	try:
+		for key in programclasses:
+			doesthiswork = [key.match(regex).group(0) for regex in yearandprogram.keys() if key.match(regex)]
+			logging.debug("Does this work: {}".format(doesthiswork))
+			logging.debug("Yearandprogram items {}".format([regex for regex in yearandprogram.items()]))
+			info.update({x:v for v,x in [yearandprogram.get(item) for item in doesthiswork]})
+			logging.debug("Adding {} to info".format(info))
+	except:
+		info = {x:v for v,x in[yearandprogram.get(key) for key in programclasses]}
+
 	logging.debug("INFO looks likes {}".format(info))
 	finalyear = max([element for element in info.keys()])
 	programname = info[finalyear] 
+	logging.debug("Addind {} {}".format(programname, finalyear))
 	programs[programname][finalyear] += 1
 
 	
@@ -81,7 +104,7 @@ for row in range(2, sheet.max_row+1):
 	nextprogram = sheet['AB' + str(row+1)].value
 	year = sheet['AE' + str(row)].value
 	subjectcode = sheet['AJ' + str(row)].value
-	classnumber = subjectcode + classnumber
+	classnumber = str(subjectcode) + classnumber
 	logging.debug("Row {}: Year: {} Class: {}".format(row,year, classnumber))
 	if(id==nextid):
 		yearandprogram[classnumber] = [program, year]
@@ -114,26 +137,19 @@ for row in range(2, sheet.max_row+1):
 			programs[newprogram]["TOOK TLM: TO CHECK"] += 1
 		elif (classcompare(studentclasses,ellmed)):
 			programcheck(ellmed,yearandprogram)
-		elif (classcompare(studentclasses, elleds)):
-			programcheck(elleds,yearandprogram)
 		elif (classcompare(studentclasses,icc)):
-			programcheck(icc, yearandprogram)
-		elif (classcompare(studentclasses,icceds)):
-			programcheck(icceds,yearandprogram)		
+			programcheck(icc, yearandprogram)	
 		elif (classcompare(studentclasses,reading)):
-			programcheck(reading,yearandprogram)		
-		elif (classcompare(studentclasses,readingeds)):
-			programcheck(readingeds,yearandprogram)		
+			programcheck(reading,yearandprogram)			
 		elif (classcompare(studentclasses,admin)):
 			programcheck(admin,yearandprogram)		
-		elif (classcompare(studentclasses,admineds)):
-			programcheck(admineds,yearandprogram)
 		elif (classcompare(studentclasses,abacert)):
 			programcheck(abacert,yearandprogram)		
 		elif (classcompare(studentclasses,profabacert)):
 			programcheck(profabacert,yearandprogram)		
 		elif (classcompare(studentclasses,spedendorse)):
 			programcheck(spedendorse,yearandprogram)
+
 		studentclasses = {}
 		yearandprogram = {}
 
