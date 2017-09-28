@@ -30,7 +30,7 @@ spedendorse = ["EGSE5023", "EGSE 5033", "EGSE5043", "EGSE5053", "EGSE5213", "EGS
 
 
 """
- 
+TODO: Check to make sure if regex works. 
 TODO: Are we sure it checks the last semester of the course in the program courses?
 
 You can't check whether a student switched programs because students have taken courses that apply for certificate progrmas under degree
