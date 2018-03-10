@@ -8,7 +8,7 @@ Also you must have two or three previous semesters included before the semester 
 Why?  Because you must capture the returning students but you cannot do that if you don't have the semester they
 started.
 
-Also you must make sure that you the column name line up with the column letters mentioned in the for each loop below. 
+Also you must make sure that column names in the spreadsheet line up with the column letters mentioned in the for each loop below, or the logical will not work.
 
 """
 
